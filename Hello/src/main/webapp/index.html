@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>인데스 페이지입니다</h1>
+	<p> 내 이름은 : <strong>노혁천이네요~</strong></p>
+	<!-- tomcat 서버상에서의 절대경로를 이용해서 이미지 로딩 시키기 -->
+	<img src="/Hello/images/kim1.png"/>
+	<!-- 현재 위치를 기준으로 한 상대경로를 이용해서 이미지 로딩시키기 -->
+	<img src="images/kim1.png"/>
+	<!-- 웹 상에서의 절대경로를 이용해서 이미지 로딩시키기 -->
+	<img src="http://localhost:8888/Hello/images/kim1.png"/>
+	<ul>
+		<li><a href="sub/play.html">놀러가기</a></li>
+		<li><a href="/Hello/sub/play.html">tomcat 서버상에서의 절대경로를 이용해서 놀러가기</a></li>
+		<li><a href="http://localhost:8888/Hello/sub/play.html">웹 상에서의 절대경로를 이용해서 놀러가기</a></li>
+		<li><a href="ping">핑</a></li>
+	</ul>
+</body>
+</html>
