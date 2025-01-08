@@ -1,4 +1,4 @@
-package test.member.dao;
+package test.food.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,44 +7,85 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import test.food.dto.FoodDto;
 import test.member.dto.MemberDto;
 import test.util.DbcpBean;
 
-public class MemberDao {
-	//회원 한명의 전보를 추가하는 메소드
-	public boolean insert(MemberDto dto) {
+public class FoodDao {
+	public boolean insert(FoodDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int rowCount = 0;
 		try {
-			conn=new DbcpBean().getConn();
-			//실행할 미완성의sql문
-			String sql="""
-					INSERT INTO member
-					(num, name, addr)
-					values(member_seq.NEXTVAL, ?, ?)
+			conn = new DbcpBean().getConn();
+			//실행할 미완성의 sql 문
+			String sql = """
+					insert into food
+					(num, type, name, price)
+					values
+					(food_seq.NEXTVAL,?,?,?)
 					""";
-			pstmt=conn.prepareStatement(sql);
-			//? 에 값을 바인딩
-			pstmt.setString(1, dto.getName());
-			pstmt.setString(2, dto.getAddr());
-			//sql 문 실행하고 변화된 row 의 갯수 리턴
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 값을 여기서 바인딩한다.
+				pstmt.setString(1, dto.getType());
+				pstmt.setString(2, dto.getName());
+				pstmt.setInt(3, dto.getPrice());
+			// sql 문 실행하고 변화된 row 의 갯수 리턴받기
 			rowCount = pstmt.executeUpdate();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if(conn!=null)conn.close();
-				if(pstmt!=null)pstmt.close();
-			}catch(Exception e) {}
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
 		}
-		if(rowCount > 0) {
+		if (rowCount > 0) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
-	}//insert() 메소드
-	//회원 한 명의 정보를 삭제하고 성공 여부를 리턴하는 메소드
+	}
+	public boolean update(FoodDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			//실행할 미완성의 sql 문
+			String sql = """
+					update food
+					set type = ?,name = ?,price = ?
+					where num = ?
+					""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 값을 여기서 바인딩한다.
+			pstmt.setString(1, dto.getType());
+			pstmt.setString(2, dto.getName());
+			pstmt.setInt(3, dto.getPrice());
+			pstmt.setInt(4, dto.getNum());
+			// sql 문 실행하고 변화된 row 의 갯수 리턴받기
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+				if (pstmt != null)
+					pstmt.close();
+			} catch (Exception e) {
+			}
+		}
+		if (rowCount > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	public boolean delete(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -53,7 +94,7 @@ public class MemberDao {
 			conn = new DbcpBean().getConn();
 			//실행할 미완성의 sql 문
 			String sql = """
-					delete from member
+					delete from food
 					where num = ?
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -78,46 +119,8 @@ public class MemberDao {
 			return false;
 		}
 	}
-	//회원 한 명의 정보를 수정하고 성공 여부를 리턴하는 메소드
-	public boolean update(MemberDto dto) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		int rowCount = 0;
-		try {
-			conn = new DbcpBean().getConn();
-			//실행할 미완성의 sql 문
-			String sql = """
-					update member
-					set name = ?,addr = ?
-					where num = ?
-					""";
-			pstmt = conn.prepareStatement(sql);
-			// ? 에 값을 여기서 바인딩한다.
-			pstmt.setString(1, dto.getName());
-			pstmt.setString(2, dto.getAddr());
-			pstmt.setInt(3, dto.getNum());
-			// sql 문 실행하고 변화된 row 의 갯수 리턴받기
-			rowCount = pstmt.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-			}
-		}
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public List<MemberDto>getList(){
-		List<MemberDto>list = new ArrayList<>();
+	public List<FoodDto>getList(){
+		List<FoodDto>list = new ArrayList<>();
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -126,8 +129,8 @@ public class MemberDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문 작성
 			String sql="""
-					SELECT num, name, addr
-					from member
+					SELECT num, type, name, price 
+					from food
 					ORDER BY num ASC
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -135,14 +138,15 @@ public class MemberDao {
 			
 			rs=pstmt.executeQuery();
 			while(rs.next()) {
-				MemberDto dto = new MemberDto();
+				FoodDto dto = new FoodDto();
 				dto.setNum(rs.getInt("num"));
 				dto.setName(rs.getString("name"));
-				dto.setAddr(rs.getString("addr"));
+				dto.setType(rs.getString("type"));
+				dto.setPrice(rs.getInt("price"));
 				//회원 한명의 정보가 담긴 dto 를 List 객체에 누적 시키기
 				list.add(dto);
 			}
-		}catch(Exception e) {
+		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
 			try {
@@ -153,10 +157,9 @@ public class MemberDao {
 		}
 		//List 객체 리턴
 		return list;
-	}//getlist()
-
-	public MemberDto getData(int num) {
-		MemberDto dto = null;
+	}
+	public FoodDto getData(int num) {
+		FoodDto dto = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -165,8 +168,8 @@ public class MemberDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql 문 작성
 			String sql = """
-					select name, addr
-					from member
+					select type, name, price
+					from food
 					where num = ?
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -175,10 +178,11 @@ public class MemberDao {
 			//sql 문 실행하고 결과를 ResultSet 객체로 리턴받기
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				dto = new MemberDto();
+				dto = new FoodDto();
 				dto.setNum(num);
+				dto.setType(rs.getString("type"));
 				dto.setName(rs.getString("name"));
-				dto.setAddr(rs.getString("addr"));
+				dto.setPrice(rs.getInt("price"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -194,4 +198,4 @@ public class MemberDao {
 			}
 		}return dto;
 	}
-}//class
+}
