@@ -14,18 +14,28 @@
 <head>
 <meta charset="UTF-8">
 <title>/food/updateform.jsp</title>
+<jsp:include page="/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div class="container">
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }">Home</a></li>
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }/food/list.jsp">음식 목록</a>
+				</li>
+				<li class="breadcrumb-item active">음식 수정</li>
+			</ol>
+		</nav>
 		<h1>음식 정보 수정</h1>
-		<p><%=true ? "selected" :""%></p>
-		<p><%=false ? "selected" : "" %></p>
+		<%--<p><%=true ? "selected" : ""%></p>--%>
 		<form action="update.jsp" method="post">
 			<!-- 화면에 보이지는 않지만 폼 제출할때 같이 전송되는 값 -->
 			<input type="hidden" name="num" value="<%= dto.getNum() %>"/>
-			<div>
-				<label for="type">종류</label>
-				<select name="type" id="type">
+			<div class="mb-3">
+				<label class="form.label" for="type">종류</label>
+				<select class="form-select"name="type" id="type">
                 	<option value="">선택</option>
                 	<option <%=dto.getType().equals("한식") ? "selected" :""%>>한식</option>
                 	<option <%=dto.getType().equals("중식") ? "selected" :""%>>중식</option>
@@ -34,17 +44,17 @@
                 	<option <%=dto.getType().equals("기타") ? "selected" :""%>>기타</option>
         		</select>
         	</div>	
-			<div>
-				<label for="name">음식 이름</label>
-				<input type="text" name="name" id="name" value="<%= dto.getName() %>"/>
+			<div class="mb-3">
+				<label class="form.label" for="name">음식 이름</label>
+				<input class="form-control" type="text" name="name" id="name" value="<%= dto.getName() %>"/>
 			</div>
-			<div>
-				<label for="price">가격</label>
-				<input type="number" name="price" id="price" max="100000" min="1000" step = "100" value="<%= dto.getPrice() %>"/>
+			<div class="mb-3">
+				<label class="form.label" for="price">가격</label>
+				<input class="form-control" type="number" name="price" id="price" max="100000" min="1000" step = "100" value="<%= dto.getPrice() %>"/>
 			</div>		
-			<button type="submit">수정</button>
+			<button class="btn btn-outline-success btn-md" type="submit">수정</button>
 			<!-- 원래의 value 상태로 돌아가기 -->
-			<button type="reset">취소</button>
+			<button class="btn btn-outline-danger btn-md" type="reset">취소</button>
 		</form>
 	</div>
 </body>

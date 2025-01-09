@@ -14,27 +14,38 @@
 <head>
 <meta charset="UTF-8">
 <title>webapp/member/updateform.jsp</title>
+<jsp:include page="/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div class="container">
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }">Home</a></li>
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }/member/list.jsp">회원목록</a>
+				</li>
+				<li class="breadcrumb-item active">회원 수정</li>
+			</ol>
+		</nav>
 		<h1>회원 정보 수정</h1>
 		<form action="${pageContext.request.contextPath}/member/update.jsp" method="post">
-			<div>
-				<label for="num">번호</label>
+			<div class="mb-3">
+				<label class="form.label" for="num">번호</label>
 				<!-- 숫자는 건들지 말아야 되기 때문에 readonly 를 붙인다 -->
-				<input type="text" name="num" value="<%= dto.getNum() %>" readonly/>
+				<input class="form-control" type="text" name="num" value="<%= dto.getNum() %>" readonly/>
 			</div>
-			<div>
-				<label for="name">이름</label>
-				<input type="text" name="name" id="name" value="<%= dto.getName() %>"/>
+			<div class="mb-3">
+				<label class="form.label" for="name">이름</label>
+				<input class="form-control" type="text" name="name" id="name" value="<%= dto.getName() %>"/>
 			</div>
-			<div>
-				<label for="addr">주소</label>
-				<input type="text" name="addr" id="addr" value="<%= dto.getAddr() %>"/>
+			<div class="mb-3">
+				<label class="form.label" for="addr">주소</label>
+				<input class="form-control" type="text" name="addr" id="addr" value="<%= dto.getAddr() %>"/>
 			</div>		
-			<button type="submit">수정</button>
+			<button class="btn btn-success" type="submit">수정</button>
 			<!-- 원래의 value 상태로 돌아가기 -->
-			<button type="reset">취소</button>
+			<button class="btn btn-danger" type="reset">취소</button>
 		</form>
 	</div>
 </body>

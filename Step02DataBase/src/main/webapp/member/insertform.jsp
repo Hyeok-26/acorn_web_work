@@ -1,24 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>webapp/member/insertform.jsp</title>
+<jsp:include page="/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div class="container">
-		<h1>회원이름 추가</h1>
-		<form action="${pageContext.request.contextPath}/member/insert.jsp" method="post">
-			<div>
-				<label for="name">이름</label>
-				<input type="text" name="name" id="name" placeholder="이름 입력..." />
+		<%--클라이언트가 길을 잃지 않도록 breadcrumb 을 추가--%>
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }">Home</a></li>
+				<li class="breadcrumb-item"><a
+					href="${pageContext.request.contextPath }/member/list.jsp">회원목록</a>
+				</li>
+				<li class="breadcrumb-item active">회원 추가</li>
+			</ol>
+		</nav>
+		<h1>회원 추가</h1>
+		<form action="${pageContext.request.contextPath}/member/insert.jsp"
+			method="post">
+			<div class="mb-3">
+				<label class="form-label" for="name">이름</label> 
+				<input class="form-control" type="text" name="name" id="name" placeholder="이름 입력..." />
 			</div>
-			<div>
-				<label for="addr">주소</label>
-				<input type="text" name="addr" id="addr" placeholder="주소 입력..." />
-			</div>		
-			<button type="submit">저장</button>
+			<div class="mb-3">
+				<label class="form-label" for="addr">주소</label> 
+				<input class="form-control" type="text" name="addr" id="addr" placeholder="주소 입력..." />
+			</div>
+			<button class="btn btn-success" type="submit">저장</button>
 		</form>
 	</div>
 </body>
