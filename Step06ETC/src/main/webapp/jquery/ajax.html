@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AJAX.html</title>
+</head>
+<body>
+	<h1>jquery 에서 ajax 요청하기</h1>
+	<input type="text" placeholder="메세지 입력" id="inputMsg"/>
+	<button id="sendBtn">전송</button>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+	<script>
+		//버튼을 클릭했을때 실행할 함수 등록
+		$("#sendBtn").click(()=>{
+			//입력한 내용 읽어오기
+			const msg=$("#inputMsg").val();
+			//jquery 의 ajax() 함수를 이용해서 페이지 전환 없이 서버에 요청하기
+			$.ajax({
+				url:"send.jsp",
+				method:"post",
+				data:{msg},//똑같은 키 값으로 변수를 넣고 싶을 떄 키와 변수명이 같으면 줄여서 사용할 수 있따
+				success:(res)=>{
+					console.log(res);
+				}
+			});
+		});
+	</script>
+</body>
+</html>

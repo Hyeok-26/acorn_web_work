@@ -19,6 +19,24 @@
 				<div class="invalid-feedback">사용할 수 없는 아이디 입니다</div>
 			</div>
 			
+	            <div class="d-flex mb-2 align-items-center">
+	            	<div>
+		            	<label class="form-label" for="email">이메일</label>
+		                <input class="form-control me-2" type="text" name="email" id="email" style="flex: 2;" />
+		                <div class="invalid-feedback" id="emailFeedback"></div>
+		                <div class="valid-feedback" id="emailFeedback2"></div>
+		            </div>
+	                <span class="me-2">@</span>
+	                <select name="domainList" id="domainList" class="form-select" style="flex: 2;">
+	                    <option value="naver.com">naver.com</option>
+	                    <option value="google.com">google.com</option>
+	                    <option value="daum.net">daum.net</option>
+	                    <option value="hanmail.net">hanmail.net</option>
+	                    <option value="nate.com">nate.com</option>
+	                </select>
+	                <button class="btn btn-success ms-2" id="checkEmail">전송</button>
+	            </div>
+	       
 			<div class="mb-2">
 				<label class="form-label" for="pwd">비밀번호</label>
 				<input class="form-control" type="password" name="pwd" id="pwd"/>
@@ -43,7 +61,7 @@
 		//정규 표현식
 		const reg_id = /^[a-z]\S{4,9}$/;
 		const reg_pwd = /[\W]/;
-		const reg_email = 1;
+		const reg_email =/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*$/;
 		
 		document.querySelector("#signupForm").addEventListener("submit",(event)=>{
 			const idCheck = document.querySelector("#id").value;
@@ -56,7 +74,7 @@
 		const checkForm=()=>{
 			//상태값에 따른 동작을 하도록 분기한다
 			//폼 전체의 유효성 여부에 따라 분기한다(지금은 id 유효성 여부만)
-			if(idValid&&pwdValid){
+			if(idValid&&pwdValid&&emailValid){
 				//type 속성이 submit 인 요소를 찾아서 disabled 속성을 제거
 				document.querySelector("[type=submit]").removeAttribute("disabled");
 				
@@ -111,9 +129,53 @@
 		document.querySelector("#pwd").addEventListener("input", checkPwd)
 		document.querySelector("#pwd2").addEventListener("input", checkPwd)
 		
-		const checkEmail = ()=>{
+		document.querySelector("#email").addEventListener("input",(event)=>{
+			//이메일 앞 자리
+			let domain = event.target.value;
 			
-		};
+			
+			event.target.classList.remove("is-valid","is-invalid");
+			
+			if(!reg_email.test(domain)){
+				event.target.classList.add("is-invalid");
+				document.querySelector("#emailFeedback").textContent="유효한 이메일 형식이 아닙니다"
+				emailValid = false;
+				checkForm();
+				return;
+			}
+		});
+		document.querySelector("#checkEmail").addEventListener("click", () => {
+		    const domain = document.querySelector("#email").value;
+		  	//셀렉트 이메일
+			const select = document.querySelector("#domainList").value;
+			//연결
+			const holly = `\${domain}@\${select}`;
+			
+
+		    fetch(`${pageContext.request.contextPath}/user/checkemail.jsp?email=\${holly}`)
+		        .then(res => res.json())
+		        .then(data => {
+		            const emailInput = document.querySelector("#email");
+		            emailInput.classList.remove("is-valid", "is-invalid");
+
+		            // 인증 결과에 따른 처리
+		            if (data.canUse) {
+		            	console.log(data.canUse);
+		            	document.querySelector("#email").classList.add("is-valid");
+		                document.querySelector("#emailFeedback2").textContent="인증되었습니다!";
+		                emailValid = true;
+		            } else {
+		            	document.querySelector("#email").classList.add("is-invalid");
+		            	document.querySelector("#emailFeedback").textContent="이미 존재하는 이메일입니다!";
+		            	emailValid = false;
+		            }
+
+		            checkForm();
+		        })
+		        .catch(error => {
+		            console.log("에러 정보:", error);
+		        });
+		});
 	
 	</script>
 </body>
