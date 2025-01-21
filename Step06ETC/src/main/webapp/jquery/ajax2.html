@@ -22,6 +22,7 @@
 						//반복 횟수 만큼 li 요소 만들고 이름을 출력하고 id 가 list 요소의 자식요소로 추가
 						const li = $("<li>").text(res[i]);
 			            $("#List").append(li);
+			            $("<li>").text(res[i]).appendTo("#List");
 					}
 				}
 			});

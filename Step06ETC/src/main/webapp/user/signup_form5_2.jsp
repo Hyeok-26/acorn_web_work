@@ -23,7 +23,7 @@
 			<div class="mb-2">
 				<label class="form-label" for="pwd">비밀번호</label>
 				<input v-model="pwd"  
-					@input="onInputPwd" 
+					@input="onPwdInput" 
 					:class="{'is-valid':isPwdValid ,'is-invalid':!isPwdValid && isPwdDirty}"
 					class="form-control" type="password" name="pwd" id="pwd"/>
 				<small class="form-text" >특수 문자를 하나 이상 조합하세요.</small>
@@ -31,7 +31,8 @@
 			</div>
 			<div class="mb-2">
 				<label class="form-label" for="pwd2">비밀번호 확인</label>
-				<input v-model="pwd2" @input="onInputPwd" :class="{'is-valid':isPwdValid2 ,'is-invalid':!isPwdValid2 && isPwdDirty}"
+				<input v-model="pwd2"
+					 @input="onPwdInput" 
 					class="form-control" type="password"  id="pwd2"/>
 					<div class="invalid-feedback" >비밀 번호가 같지 않습니다</div>
 			</div>
@@ -54,7 +55,6 @@
 				isIdDirty:false,
 				isPwdValid:false,
 				isPwdDirty:false,
-				isPwdValid2:false,
 				isEmailValid:false,
 				isEmailDirty:false,
 				pwd:"",
@@ -105,23 +105,23 @@
 						this.isEmailValid = false;
 					}
 				},
-				onInputPwd(e){
-					console.log(this.pwd);
-					console.log(this.pwd2);
+				onPwdInput(e){
 					this.isPwdDirty = true;
-					let inputPwd = e.target.value;
+					//정규 표현식
 					const reg_pwd = /[\W]/;
-					if(reg_pwd.test(inputPwd)){
-						this.isPwdValid = true;
-						
-						if(this.pwd!=this.pwd2){
-							this.isPwdValid = false;
-						}else{
-							this.isPwdValid2 = true;
-						}
-					}else{
+					//일단 정슈표현식 만족하는지 확인해서 만족하지 않으면 함수를 여기서 종료
+					//만일 첫 번째 비밀번호가 장규표현식을 통과하지 못하거나 또는 두번쨰 비밀번호가 정규표현식을 통과하지 못했다면
+					if(!reg_pwd.test(this.pwd) || !reg_pwd.test(this.pwd2)){
 						this.isPwdValid = false;
-						this.isPwdValid2 = false;
+						return;
+					}
+					//위를 통과 했다면 여기서는 비밀번호가 같은지 여부를 알아내서 유효성 여부에 반영한다.
+					if(this.pwd == this.pwd2){
+						//비밀번호가 유효 하다는 의미에서 true 를 넣어준다.
+						this.isPwdValid=true;
+					}else{
+						//비밀번호가 유효 하지 않다는 의미에서 false 를 넣어준다.
+						this.isPwdValid=false;
 					}
 					
 				}
