@@ -30,6 +30,7 @@
 </head>
 <body>
 	<div class="container">
+		<a href="update-form.jsp"></a>
 		<h1>가입 정보입니다</h1>
 		<table>
 			<tr>
@@ -53,7 +54,7 @@
 							</svg>
 						</c:when>
 						<c:otherwise>
-							<img id="profileimage" src="${pageContext.request.contextPath }/upload/${dto.profileimage}" alt="프로필 이미지"/>
+							<img id="profileimage" src="${pageContext.request.contextPath }/upload/${dto.profileImage}" alt="프로필 이미지"/>
 						</c:otherwise>
 					</c:choose>
 				</td>
