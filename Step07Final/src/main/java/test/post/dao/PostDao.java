@@ -21,7 +21,9 @@ public class PostDao {
     public static PostDao getInstance() {
         return dao;
     }
-	//글의 갯수를 리턴하는 메소드
+	
+    
+    //글의 갯수를 리턴하는 메소드
 	public int getCount() {
 		int count=0;
 		//필요한 객체를 담을 지역변수를 미리 만들어 둔다. 
