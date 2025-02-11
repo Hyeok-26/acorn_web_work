@@ -30,6 +30,7 @@
 			<li><a href="${pageContext.request.contextPath }/user/login-form.jsp"">로그인</a></li>
 			<li><a href="${pageContext.request.contextPath }/member-only/play.jsp">놀러 가기</a></li>
 			<li><a href="${pageContext.request.contextPath }/post/list.jsp">게시판</a></li>
+			<li><a href="toastui/form.jsp">Toast Ui Editor 테스트</a></li>
 		</ul>
 	</div>
 </body>

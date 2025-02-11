@@ -30,3 +30,16 @@ CREATE TABLE readed_data(
 	num NUMBER REFERENCES posts(num),
 	session_id VARCHAR2(50)
 );
+
+create table comments(
+	num number primary key,	--댓글의 글 번호
+	writer varchar2(100) not null, -- 작성자
+	content varchar2(200)not null, -- 내용
+	targetWriter varchar2(100) not null, --댓글 대상자의 id
+	postNum number not null, -- 원글의 글 번호
+	parentNum number not null, --댓글의 그룹번호
+	delete char(3) default 'no',
+	createdAt date
+);
+
+create sequence comments_seq;

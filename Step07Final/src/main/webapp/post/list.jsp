@@ -60,6 +60,12 @@
 	//보여줄 페이지에 해당하는 글 목록을 얻어온다.
 	//검색조건이 있을 수 있는 dto 를 메소드에 넘겨 주면서 글 목록을 얻어낸다 
 	List<PostDto> list=PostDao.getInstance().getList(dto);
+	
+	
+	/*
+		jsp 페이지에서 응답에 피필요한 데이터를 el 에서 활용할 수 있도록
+		request 객체에 특정 키값으로 담는다.
+	*/
 	request.setAttribute("list", list);
 	request.setAttribute("startPageNum", startPageNum);
 	request.setAttribute("endPageNum", endPageNum);
@@ -79,6 +85,7 @@
 <body>
 	<div class="container">
 		<a href="${pageContext.request.contextPath }/post/protected/new.jsp">새글 작성</a>
+		<a href="${pageContext.request.contextPath }/post/protected/new2.jsp">새글 작성2</a>
 		<h1>게시글 목록 입니다</h1>
 		<table class="table table-striped">
 			<thead class="table-dark">
