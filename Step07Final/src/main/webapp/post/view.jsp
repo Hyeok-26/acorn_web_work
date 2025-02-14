@@ -131,29 +131,67 @@
 	  border: 1px solid #ccc;
 	  border-radius: 4px;
 	}
-	.loader{
-		/* 로딩 이미지를 가운데 정렬하기 위해 */
-		text-align: center;
-		/* 일단 숨겨 놓기 */
-		display: none;
-	}
-	/* 회전하는 키프레임 정의 */
-	@keyframes rotateAni{
-		from{
-			transform: rotate(0deg);
-		}
-		to{
-			transform: rotate(360deg);
-		}
-	}
-	/* 회전하는 키프레임을 로더 이미지에 무한 반복 시키기 */
-	.loader svg{
-		animation: rotateAni 1s ease-out infinite;
+	/* 댓글 컨테이너 */
+	.comment-header {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between; /* 좌측: 프로필+작성자 | 우측: 버튼 */
+	    gap: 10px;
+	    padding: 10px 0;
+	    border-bottom: 1px solid #ddd;
 	}
 	
-	body{
-		padding-bottom: 200px;
+	/* 프로필 이미지와 작성자 정보 */
+	.comment-profile {
+	    display: flex;
+	    align-items: center;
+	    gap: 10px;
 	}
+	
+	/* 프로필 이미지 */
+	.comment-profile .profile-image {
+	    width: 40px;
+	    height: 40px;
+	    border-radius: 50%;
+	    object-fit: cover;
+	    border: 1px solid #cecece;
+	}
+	
+	
+	
+	/* 작성자와 날짜 정보 */
+	.comment-meta {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 3px;
+	}
+	
+	.comment-writer {
+	    font-weight: bold;
+	    color: #333;
+	}
+	
+	.comment-date {
+	    font-size: 0.85em;
+	    color: #777;
+	}
+	
+	/* 답글, 수정, 삭제 버튼 */
+	.comment-actions {
+	    display: flex;
+	    gap: 10px; /* 버튼 간 간격 */
+	    font-size: 0.9em;
+	}
+	
+	.comment-actions a {
+	    text-decoration: none;
+	    color: #007bff;
+	}
+	
+	.comment-actions a:hover {
+	    text-decoration: underline;
+	}
+
 </style>
 </head>
 <body>
@@ -232,28 +270,47 @@
 			<ul>
 			
 			</ul>
-			<div class="more">
-				<button id="moreBtn">댓글 더보기</button>
+			<div class="d-grid col-sm-6 mx-auto mb-5">
+				<button class="btn btn-success" id="moreBtn">
+					<span id="moreText">댓글 더보기</span>
+					<div id="spinner" class="spinner-border" role="status">
+  						<span class="visually-hidden">Loading...</span>
+					</div>
+				</button>
 			</div>
 		</div>
 	</div>
 	<script>
-		let totalPageCount = 0;
+		let totalPageCount=0;
 		let currentPage=1;
+		
+		setLoading(false);
+
+		function setLoading(loading){
+			if(loading){
+				document.querySelector("#moreText").style.display="none";
+				document.querySelector("#spinner").style.display = "inline-block";
+			}else{
+				document.querySelector("#moreText").style.display="inline-block";
+				document.querySelector("#spinner").style.display = "none";
+			}
+		}
 	
-		document.querySelector("#moreBtn").addEventListener("click",()=>{
+		document.querySelector("#moreBtn").addEventListener("click", ()=>{
 			if(currentPage >= totalPageCount){
 				alert("댓글의 마지막 페이지 입니다.");
 				return;
 			}
-			//댓글 페이지 번호를 1 증가시키고
+			setLoading(true);
+			//댓글 페이지 번호를 1 증가 시키고
 			currentPage++;
-			//해당 페이지의 정보를 요청해서 받아온다
+			//해당페이지의 정보를 요청해서 받아온다. 
 			fetch(`comment-list.jsp?pageNum=\${currentPage}&postNum=${dto.num}`)
 			.then(res=>res.json())
 			.then(commentData=>{
+				setLoading(false);
 				//전체 페이지의 갯수
-				totalPageCount = commentData.totalPageCount;
+				totalPageCount=commentData.totalPageCount;
 				//댓글 목록에 있는 댓글 정보 하나 하나를 참조하면서 
 				commentData.list.forEach(item=>{
 					//댓글 하나의 정보를 makeList 함수에 전달해서 댓글 정보가 출력된 li 를 얻어낸다.
@@ -272,9 +329,8 @@
 			fetch("comment-list.jsp?pageNum=1&postNum=${dto.num}")
 			.then(res=>res.json())
 			.then(commentData=>{
-				console.log(commentData);
 				//전체 페이지의 갯수
-				totalPageCount = commentData.totalPageCount;
+				totalPageCount=commentData.totalPageCount;
 				
 				//댓글 목록에 있는 댓글 정보 하나 하나를 참조하면서 
 				commentData.list.forEach(item=>{
@@ -290,13 +346,22 @@
 		
 		refreshComments();
 
-	
+		//클라이언트가 해석(출력)하는 js를 동적으로 구성한다
 		//로그인된 사용자의 이름
 		const userName="${sessionDto.userName}";
-	
+		//로그인 여부
+		const isLogin=${not empty sessionDto};
+		
 		document.querySelector(".comment-form").addEventListener("submit", (e)=>{
 			//폼 제출 막기 
 			e.preventDefault();
+			
+			if(!isLogin){
+				alert("로그인 페이지로 이동합니다");
+				location.href="${pageContext.request.contextPath }/user/login-form.jsp?url=${pageContext.request.contextPath }/post/view.jsp?num=${dto.num}";
+				return;
+			}
+			
 			//폼에 작성된 내용을 이용해서 query 문자열을 얻어낸다. 
 			const formData=new FormData(e.target);
 			const queryString = new URLSearchParams(formData).toString();
@@ -307,15 +372,9 @@
 				body:queryString
 			})
 			.then(res=>res.json())
-			.then(comment=>{
-				//새로 추가된 댓글 정보를 이용해서 li 를 만든다.
-				//const li=makeList(comment);
-				//만든 li 를 댓글 목록의 가장 위에 출력한다. 
-				//document.querySelector(".comments ul").insertAdjacentElement("afterbegin", li);
-			
+			.then(comment=>{	
 				//댓글 1page 내용을 다시 출력해준다.
 				refreshComments();
-				
 			});
 		});
 		
@@ -323,11 +382,17 @@
 		function makeList(comment){
 			// li 요소를 만들어서 
 			const li = document.createElement("li");
-			li.classList.add(comment.num !== comment.parentNum ? "indent" : "not");
+			// 댓글의 댓글 li 요소에는 indent 클래스를 추가한다
+			li.classList.add(comment.num !== comment.parentNum ? "indent" : "not-indent");
 			
 			//만일 삭제된 댓글 이라면 
 			if(comment.deleted == "yes"){
-				li.innerHTML="<p>삭제된 댓글입니다</p>";
+				li.innerHTML=`
+					<svg style="\${comment.num != comment.parentNum ? 'display:inline' : ''}"  class="reply-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+		  				<path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z"/>
+					</svg>
+					<pre>삭제된 댓글입니다</pre>
+				`;
 				//삭제된 댓글입니다가 출력된 li 를 바로 리턴해 준다.
 				return li;
 			}
@@ -335,40 +400,47 @@
 			// 프로필 이미지 처리
             const profileImage = comment.profileImage 
                 ? `<img class="profile-image" src="${pageContext.request.contextPath }/upload/\${comment.profileImage}" alt="Profile Image">`
-                : `<svg class="profile-image" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                : `<svg class="profile-image default-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                </svg>`;
+                </svg>`; 
                 
             //수정 삭제 링크 처리
             const link = userName == comment.writer
             	? `
-            		<a data-num="\${comment.num}" class="update-link" href="javascript:">수정</a>
-					<a data-num="\${comment.num}" class="delete-link" href="javascript:">삭제</a>
+            		<a class="update-link" href="javascript:">수정</a>
+					<a class="delete-link" href="javascript:">삭제</a>
             	` 
             	: "";
             
             //li 요소안에 dl 을 출력한다. 
+            //innerHTML 로 해야 마크업에 해당하는 요소로 평가된다.
 			li.innerHTML=`
 				<svg style="\${comment.num != comment.parentNum ? 'display:inline' : ''}"  class="reply-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
 	  				<path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z"/>
 				</svg>
 				<dl>
-					<dt>
-						\${profileImage}
-						<!-- 댓글 작성자 -->
-						<span>\${comment.writer}</span>
-						<!-- 댓글 대상자를 조건부로 출력 (대댓글에만 출력) -->
-						\${comment.num != comment.parentNum ? '@'+comment.targetWriter : ''}
-						<!-- 댓글 작성일자 -->
-						<small>\${comment.createdAt}</small>
-						<!-- 답글 링크 -->
-						<a data-num="\${comment.num}" class="reply-link" href="javascript:">답글</a>
-						<!-- 로그인된 유저가 쓴 댓글일 경우 수정, 삭제 링크를 제공한다 -->
-						\${link}
+					<dt class="comment-header">
+					    <!-- 프로필 이미지 -->
+					    <div class="comment-profile">
+					        \${profileImage}
+					        <div class="comment-meta">
+					            <span class="comment-writer">
+					            	\${comment.writer}
+					            	\${comment.num != comment.parentNum ? '@' + comment.targetWriter : ''}
+					            </span>
+					            <small class="comment-date">\${comment.createdAt}</small>
+				        	</div>
+					    </div>
+					
+					    <!-- 답글, 수정, 삭제 버튼 -->
+					    <div class="comment-actions">
+					        <a class="reply-link" href="javascript:">답글</a>
+					        \${link}
+					    </div>
 					</dt>
+
 					<dd>
-						<%-- 탭,공백,개행기호를 모두 해석해준다--%>
 						<pre>\${comment.content}</pre>
 					</dd>
 				</dl>
@@ -396,7 +468,12 @@
 					.then(data=>{
 						if(data.isSuccess){
 							//댓글이 있었던 자리에 "삭제된 댓글입니다" 를 출력해준다.
-							li.innerHTML="<p>삭제된 댓글입니다</p>";
+							li.innerHTML=`
+								<svg style="\${comment.num != comment.parentNum ? 'display:inline' : ''}"  class="reply-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+					  				<path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z"/>
+								</svg>
+								<pre>삭제된 댓글입니다</pre>
+							`;
 						}
 					});
 				}
@@ -418,7 +495,6 @@
 				.then(data=>{
 					if(data.isSuccess){
 						//수정된 댓글 내용을 pre 요소에 출력
-						//li.querySelector("pre").innerText = data.content;
 						//수정폼에서 name="content" 인 요소의 value 값을 pre 에 출력
 						li.querySelector("pre").innerText=form.content.value;
 						//form 숨기기
@@ -448,6 +524,12 @@
 			})
 			
 			li.querySelector(".reply-link").addEventListener("click", (e)=>{
+				if(!isLogin){
+					alert("로그인 페이지로 이동합니다");
+					location.href="${pageContext.request.contextPath }/user/login-form.jsp?url=${pageContext.request.contextPath }/post/view.jsp?num=${dto.num}";
+					return;
+				}
+				
 				//보여주거나 숨길 form 의 참조값 얻어내기 
 				const form=li.querySelector(".re-insert-form");
 				//눌러진 링크의 innerText 읽어오기
