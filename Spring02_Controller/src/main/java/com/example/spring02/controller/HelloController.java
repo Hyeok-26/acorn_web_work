@@ -22,7 +22,7 @@ public class HelloController {
 	@ResponseBody
 	@GetMapping("/fortune")
 	public String fortune() {
-		return "강남으로 가면 구라쌤을 만나요!";
+		return "복권에 당첨될 번호를 꿈꿔요!";
 	}
 	
 }
