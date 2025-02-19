@@ -3,20 +3,20 @@
 <mapper namespace="member">
 	<!-- select 된 row 를 어떤 type 인지 mybatis 에게 알려주어야 한다 -->
 	<!-- row 가 여러 개이면 자동으로 list 에 담아준다 -->
-	<select id="getList" resultType="com.example.spring06.dto.MemberDto">
+	<select id="getList" resultType="memberDto">
 		SELECT num, name, addr
 		FROM member
 		ORDER BY num ASC
 	</select>
 	
 	<!-- 파라미터에 전달된게 자동으로 num 바인딩 -->
-	<select id="getData" parameterType="int" resultType="com.example.spring06.dto.MemberDto">
+	<select id="getData" parameterType="int" resultType="memberDto">
 		SELECT num, name, addr
 		FROM member
 		WHERE num=#{num}
 	</select>
 	
-	<insert id="insert" parameterType="com.example.spring06.dto.MemberDto">
+	<insert id="insert" parameterType="memberDto">
 		INSERT INTO member
 		(num, name, addr)
 		VALUES(member_seq.NEXTVAL, #{name}, #{addr})
@@ -27,7 +27,7 @@
    		WHERE num = #{num}
 	</delete>
 	<!-- 수정 -->
-	<update id="update" parameterType="com.example.spring06.dto.MemberDto">
+	<update id="update" parameterType="memberDto">
 		UPDATE member
 		SET name = #{name},addr = #{addr}
 		WHERE num = #{num}
