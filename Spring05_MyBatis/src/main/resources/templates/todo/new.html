@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container">
+		<h1>뭐할까?</h1>
+		<form th:action="@{/todo/insert}" method="post">
+			<input type="text" name="content" placeholder="할일 입력..."/>
+			<input type="date" name="regdate" />
+			<button type="submit">추가</button>
+		</form>
+	</div>
+</body>
+</html>
