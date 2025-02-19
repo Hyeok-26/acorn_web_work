@@ -13,8 +13,8 @@ public class Spring05MyBatisApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(Spring05MyBatisApplication.class, args);
 	}
-	
-	//서버가 준비 되었을 때 실행할 메소드 설정
+		
+		//서버가 준비 되었을 때 실행할 메소드 설정
 		@EventListener(ApplicationReadyEvent.class)
 		public void openChorme() {
 			String url = "http://localhost:9000/spring05/";
@@ -35,4 +35,5 @@ public class Spring05MyBatisApplication {
 				e.printStackTrace();
 			}
 		}
+		
 }
