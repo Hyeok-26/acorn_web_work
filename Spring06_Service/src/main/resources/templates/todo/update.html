@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<script>
+		alert("[[${param.name}]] 님의 정보를 수정했습니다.");
+		location.href="[[@{/todo/list}]]";
+	</script>
+	
+</body>
+</html>
