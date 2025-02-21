@@ -1,17 +1,59 @@
-package com.example.spring08;
+  package com.example.spring08;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.example.spring08.util.Messenger;
+import com.example.spring08.util.WritingUtil;
+
+import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class Spring08JavaApplication {
+	
+	@Autowired
+	private WritingUtil util;
+	
+	@Autowired
+	private Messenger messenger;
+	//@SpringBootApplication클래스로 객체가 생성된 직후(spring 이 준비가 완료된 직후)
+	@PostConstruct
+	public void testAop() {
+		messenger.sendGreeting("안녕 하세요!");
+		messenger.sendGreeting("안녕 똥개야!");
+		
+		String result = messenger.getMessage();
+		System.out.println("result : "+result);
+		
+		util.writeLetter();
+		util.writeReport();
+		util.writeDiary();
+	}
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(Spring08JavaApplication.class, args);
+		
+		String pwd = "1234";
+		
+		//비밀번호를 암호화해주는 객체
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		//암호화된 비밀번호 얻어내기
+		String encodedPwd = encoder.encode(pwd);
+		//결과를 콘솔창에 출력
+		System.out.println(encodedPwd);
+		
+		//날것의 비밀번호와 암호화된 비밀번호가 같은디 여부 확인하기
+		boolean isVaild = BCrypt.checkpw("4567",encodedPwd);
+		System.out.println("일치 여부 : "+isVaild);
+		
 		// of() 메소드로 만든 List 는 읽기 전용(Read Only) 이다
 		List<String> names = List.of("김구라","해골","원숭이");
 		//names.add("주뎅이"); 동작하지 않는다
