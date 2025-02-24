@@ -21,6 +21,7 @@ public class SecurityConfig {
 	 */
 	@Bean //메소드에서 리턴되는 SecurityFilterChain 을 bean 으로 만들어준다.
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+		//spring security 가 인증과정을 거치지 않는 요청 경로
 		String[] whiteList= {"/", "/play", "/user/loginform", "/user/login-fail", "/user/expired"
 					,"/user/signup-form","/user/signup","/user/checkid"};
 		
@@ -28,30 +29,30 @@ public class SecurityConfig {
 		.csrf(csrf->csrf.disable())
 		.authorizeHttpRequests(config ->
 			config
-			.requestMatchers(whiteList).permitAll()
-			.requestMatchers("/admin/**").hasRole("ADMIN")
-			.requestMatchers("/staff/**").hasAnyRole("ADMIN", "STAFF")
-			//위 외에 어떤 요청이 와도 로그인이 필요하다
-			.anyRequest().authenticated()
+				.requestMatchers(whiteList).permitAll()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/staff/**").hasAnyRole("ADMIN", "STAFF")
+				//위 외에 어떤 요청이 와도 인증이 필요하다
+				.anyRequest().authenticated()
 		)
 		.formLogin(config ->
 			config
-			//인증을 거치지 않은 사용자를 리다일렉트 시킬 경로 설정 
-			.loginPage("/user/required-loginform")
-			//로그인 처리를 할때 요청될 url 설정 ( spring security 가 login 처리를 대신 해준다)
-			.loginProcessingUrl("/user/login")
-			//로그인 처리를 대신 하려면 어떤 파라미터명으로 username 과 password 가 넘어오는지 알려주기 
-			.usernameParameter("userName")
-			.passwordParameter("password")
-			.successHandler(new AuthSuccessHandler()) //로그인 성공 핸들러 등록
-			.failureForwardUrl("/user/login-fail")
-			.permitAll() //위에 명시한 모든 요청경로를 로그인 없이 요청할수 있도록 설정 
+				//인증을 거치지 않은 사용자를 리다일렉트 시킬 경로 설정 
+				.loginPage("/user/required-loginform")
+				//로그인 처리를 할때 요청될 url 설정 ( spring security 가 login 처리를 대신 해준다)
+				.loginProcessingUrl("/user/login")
+				//로그인 처리를 대신 하려면 어떤 파라미터명으로 username 과 password 가 넘어오는지 알려주기 
+				.usernameParameter("userName")
+				.passwordParameter("password")
+				.successHandler(new AuthSuccessHandler()) //로그인 성공 핸들러 등록
+				.failureForwardUrl("/user/login-fail")
+				.permitAll() //위에 명시한 모든 요청경로를 로그인 없이 요청할수 있도록 설정 
 		)
 		.logout(config ->
 			config
-			.logoutUrl("/user/logout")//Spring Security 가 자동으로 로그아웃 처리 해줄 경로 설정
-			.logoutSuccessUrl("/")//로그 아웃 이후에 리다일렉트 시킬 경로 설정
-			.permitAll()
+				.logoutUrl("/user/logout")//Spring Security 가 자동으로 로그아웃 처리 해줄 경로 설정
+				.logoutSuccessUrl("/")//로그 아웃 이후에 리다일렉트 시킬 경로 설정
+				.permitAll()
 		)
 		.exceptionHandling(config ->
 			//403 forbidden 인 경우 forward 이동 시킬 경로 설정 
@@ -59,8 +60,8 @@ public class SecurityConfig {
 		)
 		.sessionManagement(config -> 
 			config
-			.maximumSessions(1) //최대 허용 세션 갯수
-			.expiredUrl("/user/expired") //허용 세션 갯수가 넘어서 로그인 해제된 경우 리다일렉트 이동시킬 경로
+				.maximumSessions(1) //최대 허용 세션 갯수
+				.expiredUrl("/user/expired") //허용 세션 갯수가 넘어서 로그인 해제된 경우 리다일렉트 이동시킬 경로
 		);
 		// 설정정보를 가지고 있는 HttpSecurity 객체의 build() 메소드를 호출해서 리턴되는 객체를 리턴해준다.
 		return httpSecurity.build();

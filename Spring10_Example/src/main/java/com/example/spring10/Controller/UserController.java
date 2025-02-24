@@ -1,13 +1,20 @@
 package com.example.spring10.Controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.spring10.dto.UserDto;
 import com.example.spring10.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UserController {
@@ -75,7 +82,50 @@ public class UserController {
 	@PostMapping("/user/signup")
 	public String signup(UserDto dto) {
 		//서비스를 이용해서 회원가입 처리를 한다
-		service.save(dto);
+		service.createUser(dto);
 		return "user/signup";
+	}
+	
+	//사용 가능한 아이디인지 여부를 json 문자열로 응답하기
+	@ResponseBody //리턴하는 데이터가 json으로 변경되기도 한다
+	@GetMapping("/user/checkid")
+	public Map<String, Boolean> checkid(String userName){
+		//get 방식 파라미터로 전달되는 userName 을 이용해서 UserDto 를 얻어와 본다
+		UserDto dto = service.getByUserName(userName);
+		//dto 가 null이면 사용가능
+		boolean canUse = dto == null? true : false;
+		//Map 객체에 사용 가능가능 여부를 담아서 리턴한다.
+		Map<String, Boolean> map = Map.of("canUse",canUse);
+		return map;
+	}
+	
+	//개인정보 요청 처리
+	@GetMapping("/user/info")
+	public String info(Model model) {
+		//로그인 되어 있는 userName 얻어내기
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		//로그인 된 userName 을 이용해서 사용자 정보를 얻어내기
+		UserDto dto = service.getByUserName(userName);
+		//dto 라는 키값으로 답고
+		model.addAttribute("dto",dto);
+		//view page 에서 응답하기
+		return "user/info";
+	}
+	
+	//비밀번호 수정 요청
+	@GetMapping("/user/edit-password")
+	public String editPassword() {
+		return "user/edit-password";
+	}
+	
+	//비밀번호 업데이트
+	@PostMapping("/user/update-password")
+	public String updatePassword(UserDto dto, HttpSession session) {
+		//서비스를 이용해서 비밀번호 수정
+		//interface 타입이라 구현 안해도 사용은 가능
+		service.changePassword(dto);
+		//로그아웃 처리
+		session.invalidate();
+		return "user/update-password";
 	}
 }

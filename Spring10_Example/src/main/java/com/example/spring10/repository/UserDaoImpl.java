@@ -36,9 +36,8 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public int updatePwd(UserDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updatePassword(UserDto dto) {
+		return session.update("user.updatePassword",dto);
 	}
 
 	@Override

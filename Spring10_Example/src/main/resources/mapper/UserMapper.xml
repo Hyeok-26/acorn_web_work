@@ -22,4 +22,10 @@
 		FROM users
 		WHERE userName=#{userName}
 	</select>
+	
+	<update id="updatePassword" parameterType="com.example.spring10.dto.UserDto">
+		UPDATE users
+		SET password=#{newPassword}
+		WHERE userName=#{userName}
+	</update>
 </mapper>
