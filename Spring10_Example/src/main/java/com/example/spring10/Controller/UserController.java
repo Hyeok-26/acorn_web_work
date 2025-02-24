@@ -3,7 +3,9 @@ package com.example.spring10.Controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -127,5 +129,27 @@ public class UserController {
 		//로그아웃 처리
 		session.invalidate();
 		return "user/update-password";
+	}
+	/*
+	 * @AuthenticationPrincipal 을 이용하면 로그인 된 사용자의 정보를 담고 있는
+	 * UserDetails 객체를 얻어낼 수 있다
+	 */
+	@GetMapping("/user/edit")
+	public String edit(@AuthenticationPrincipal UserDetails ud, Model model) {
+		//로그인된 사용자의 userName
+		String userName = ud.getUsername();
+		
+		UserDto dto = service.getByUserName(userName);
+		model.addAttribute("dto", dto);
+
+		return "user/edit";
+	}
+	
+	@PostMapping("/user/update")
+	public String updateProfile(UserDto dto) {
+		//서비그를 이용해서 개인 정보 수정하고
+		service.updateUserInfo(dto);
+		//다시 개인정보 보기로 리다일렉트 이동한다.
+		return "redirect:/user/info";
 	}
 }
