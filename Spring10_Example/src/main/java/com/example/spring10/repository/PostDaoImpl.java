@@ -21,19 +21,16 @@ public class PostDaoImpl implements PostDao{
 
 	@Override
 	public int insert(PostDto dto) {
-		
 		return session.insert("post.insert",dto);
 	}
 
 	@Override
 	public int delete(long num) {
-		
 		return session.delete("post.delete", num);
 	}
 
 	@Override
 	public int update(PostDto dto) {
-		// TODO Auto-generated method stub
 		return session.update("post.update",dto);
 	}
 
@@ -41,6 +38,23 @@ public class PostDaoImpl implements PostDao{
 	public int getCount(PostDto dto) {
 		//resultType 은 int 이다
 		return session.selectOne("post.getCount", dto);
+	}
+
+	@Override
+	public long getSequence() {
+		
+		return session.selectOne("post.getSequence");
+	}
+
+	@Override
+	public PostDto getData(long num) {
+		return session.selectOne("post.getData", num);
+	}
+
+	@Override
+	public PostDto getDetail(PostDto dto) {
+		
+		return session.selectOne("post.getDetail", dto);
 	}
 
 }

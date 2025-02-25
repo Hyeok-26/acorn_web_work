@@ -7,9 +7,16 @@
 </head>
 <body>
 	<div class="container">
+		<p>[[|번호 : ${num} 이름 : ${name}|]]</p>
+		<p th:text="|번호 : ${num} 이름 : ${name}|"></p>
+		<a th:href="@{'/study?num='+${num}+'&name='+${name}}">테스트 링트</a>
+		<a th:href="@{/study(num=${num},name=${name})}">테스트 링트2</a>
+		<a th:href="@{|/study?num=${num}&name=${name}|}">테스트 링트3</a>
+		<br />
+		<a th:href="@{/post/new}">새 글 작성</a>
 		<h1>글 목록</h1>
-		<table>
-			<thead>
+		<table class="table table-striped">
+			<thead class="table-dark">
 				<tr>
 					<th>번호</th>
 					<th>작성자</th>
@@ -23,13 +30,14 @@
 					<td th:text="${tmp.num}"></td>
 					<td th:text="${tmp.writer}"></td>
 					<td>
-						<a th:href="@{/post/view(num=${tmp.num})}">[[${tmp.title}]]</a>
+						<a th:href="@{|view?num=${tmp.num}${dto.findQuery}|}">[[${tmp.title}]]</a>
 					</td>
 					<td th:text="${tmp.viewCount}"></td>
 					<td th:text="${tmp.createdAt}"></td>
 				</tr>
 			</tbody>
 		</table>
+		<!-- 페이징 처리 부분 -->
 		<nav >
 			<ul class="pagination" th:if="${dto.totalPageCount ne 0}">
                 <li th:if="${dto.startPageNum ne 1}" class="page-item">
