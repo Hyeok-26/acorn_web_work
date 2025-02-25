@@ -22,6 +22,7 @@
 					<th>작성자</th>
 					<th>제목</th>
 					<th>조회수</th>
+					<th>수정일</th>
 					<th>등록일</th>
 				</tr>
 			</thead>
@@ -33,6 +34,7 @@
 						<a th:href="@{|view?num=${tmp.num}${dto.findQuery}|}">[[${tmp.title}]]</a>
 					</td>
 					<td th:text="${tmp.viewCount}"></td>
+					<td th:text="${tmp.updatedAt}"></td>
 					<td th:text="${tmp.createdAt}"></td>
 				</tr>
 			</tbody>

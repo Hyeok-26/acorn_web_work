@@ -79,4 +79,22 @@
 			<include refid="search"/> ) result1
 		WHERE num=#{num}
 	</select>
+	<!-- 읽은 세션 집어넣기 -->
+	<insert id="insertReaded" parameterType="map">
+		INSERT INTO readed_data
+		(num, session_id)
+		VALUES(#{num}, #{sessionId}) 
+	</insert>
+	<!-- 조회수 누적 방지 -->
+	<select id="isReaded" parameterType="map" resultType="map">
+		SELECT *
+		FROM readed_data
+		WHERE num=#{num} AND session_id=#{sessionId}
+	</select>
+	<!-- 조회수 추가 -->
+	<update id="addViewCount" parameterType="long">
+		UPDATE posts
+		SET viewCount=viewCount+1
+		WHERE num=#{num}
+	</update>
 </mapper>
