@@ -1,12 +1,17 @@
 package com.example.spring10.Controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.spring10.dto.CommentDto;
+import com.example.spring10.dto.CommentListRequest;
 import com.example.spring10.dto.PostDto;
 import com.example.spring10.dto.PostListDto;
 import com.example.spring10.service.PostService;
@@ -79,6 +84,7 @@ public class PostController {
 		model.addAttribute("dto", dto);
 		return "post/edit";
 	}
+	
 	//post 수정 요청 처리 촘
 	@PostMapping("/post/update")
 	public String update(PostDto dto,RedirectAttributes ra) {
@@ -91,10 +97,44 @@ public class PostController {
 		//수정 반영후 글 자세히 보기로 이동
 		return "redirect:/post/view?num="+dto.getNum();
 	}
+	
 	//글 삭제처리
 	@GetMapping("/post/delete")
 	public String delete(long num) {
 		service.deletePost(num);
 		return "post/delete";
 	}
+	
+	//댓글 저장 요청처리
+	@PostMapping("/post/save-comment")
+	@ResponseBody//dto 에 저장된 내용을json 을 응답하기 위한 어노테이션
+	public CommentDto saveComment(CommentDto dto) {
+		System.out.println("댓글 저장 요청: " + dto);
+		service.createComment(dto);
+		return dto;
+	}
+	//댓글 목록을 요청처리
+	@GetMapping("/post/comment-list")
+	@ResponseBody 
+	public Map<String, Object> commentList(CommentListRequest clr){
+		//CommentListRequest 객체에는 댓글의 pageNum 과 원글의 글번호 postNum 이 들어간다.
+		
+		return service.getComments(clr);
+	}
+	
+	@GetMapping("/post/delete-comment")
+	@ResponseBody
+	public Map<String, Boolean> deleteComment(long num){
+		service.deleteComment(num);
+		//@ResponseBody 어노테이션을 붙여놓고 아래의 데이터를 리턴하면 {"isSuccess":true} 형식의 json
+		return Map.of("isSuccess", true);
+	}
+	
+	@PostMapping("/post/update-comment")
+	@ResponseBody
+	public Map<String, Boolean> updateComment(CommentDto dto){
+		service.updateComment(dto);
+		return Map.of("isSuccess", true);
+	}
+
 }

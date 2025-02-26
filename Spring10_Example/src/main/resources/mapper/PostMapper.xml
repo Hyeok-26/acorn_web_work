@@ -97,4 +97,9 @@
 		SET viewCount=viewCount+1
 		WHERE num=#{num}
 	</update>
+	<!-- 자식 제거 -->
+	<delete id="deleteReaded" parameterType="long">
+		DELETE FROM readed_data
+		WHERE num=#{num}
+	</delete>
 </mapper>
