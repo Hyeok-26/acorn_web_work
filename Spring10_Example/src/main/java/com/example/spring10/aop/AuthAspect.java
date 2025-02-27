@@ -11,6 +11,7 @@ import com.example.spring10.dto.CommentDto;
 import com.example.spring10.dto.PostDto;
 import com.example.spring10.exception.DeniedException;
 import com.example.spring10.repository.CommentDao;
+import com.example.spring10.repository.FileDao;
 import com.example.spring10.repository.PostDao;
 
 @Aspect	//aspect 역할을 하기 위한 어노테이션
@@ -19,6 +20,7 @@ public class AuthAspect {
 	
 	@Autowired private PostDao postDao;
 	@Autowired private CommentDao commentDao;
+	@Autowired private FileDao fileDao;
 	
 	//매개변수를 읽어야 하는 시점에 실행해야 하기 때문에 사용
 	@Around("execution(* com.example.spring10.service.*.delete*(..)) || execution(* com.example.spring10.service.*.update*(..))")
@@ -48,6 +50,8 @@ public class AuthAspect {
 			writer=postDao.getData(num).getWriter();
 		}else if(methodName.contains("Comment")) {
 			writer=commentDao.getData(num).getWriter();
+		}else if(methodName.contains("File")) {
+			writer=fileDao.getData(num).getUploader();
 		}
 		
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();

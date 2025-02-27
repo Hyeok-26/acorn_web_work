@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="file">
+	<sql id="column">
+		num, uploader, orgFileName, saveFileName, fileSize, uploadedAt
+	</sql>
+	<select id="getFileList" parameterType="fileDto" resultType="fileDto">
+		SELECT <include refid="column"/>
+		FROM files
+		ORDER BY num DESC
+	</select>
+
+	<insert id="upload" parameterType="fileDto">
+		INSERT INTO files
+		(<include refid="column"/>)
+		VALUES(#{num},#{uploader}, #{orgFileName}, #{saveFileName}, #{fileSize}, SYSDATE)
+	</insert>
+	
+	<select id="getSequence" resultType="long">
+		SELECT files_seq.NEXTVAL
+		FROM dual
+	</select>
+	
+	<delete id="delete" parameterType="long">
+		DELETE FROM files
+		WHERE num=#{num}
+	</delete>
+	
+	<select id="getData" parameterType="long" resultType="fileDto">
+		SELECT <include refid="column"/>
+		FROM files
+		WHERE num=#{num}
+	</select>
+</mapper>
