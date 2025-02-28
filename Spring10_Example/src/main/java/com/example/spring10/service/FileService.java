@@ -9,8 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.spring10.dto.FileDto;
 
 public interface FileService {
-	public long uploadFile(FileDto dto, MultipartFile myFile);
-	public List<FileDto> getList();
+	public long uploadFile(FileDto dto);
+	public void updateFile(FileDto dto);
 	public void deleteFile(long num);
-	public ResponseEntity<InputStreamResource> download(FileDto dto);
+	public List<FileDto> getFiles();
+	public ResponseEntity<InputStreamResource> download(long num);
 }

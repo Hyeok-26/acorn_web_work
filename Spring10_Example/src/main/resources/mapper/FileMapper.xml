@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="file">
+	<!-- 목록 모으기 -->
 	<sql id="column">
-		num, uploader, orgFileName, saveFileName, fileSize, uploadedAt
+		num, uploader, title, orgFileName, saveFileName, fileSize, uploadedAt
 	</sql>
-	<select id="getFileList" parameterType="fileDto" resultType="fileDto">
+	<select id="getFileList" resultType="fileDto">
 		SELECT <include refid="column"/>
 		FROM files
 		ORDER BY num DESC
 	</select>
-
+	<!-- 파일 업로드 -->
 	<insert id="upload" parameterType="fileDto">
 		INSERT INTO files
 		(<include refid="column"/>)
-		VALUES(#{num},#{uploader}, #{orgFileName}, #{saveFileName}, #{fileSize}, SYSDATE)
+		VALUES(#{num},#{uploader}, #{title}, #{orgFileName}, #{saveFileName}, #{fileSize}, SYSDATE)
 	</insert>
-	
+	<!-- 시퀀스값 얻어오기 -->
 	<select id="getSequence" resultType="long">
 		SELECT files_seq.NEXTVAL
 		FROM dual
 	</select>
-	
+	<!-- 파일 삭제 -->
 	<delete id="delete" parameterType="long">
 		DELETE FROM files
 		WHERE num=#{num}
 	</delete>
-	
+	<!-- 특정 파일 조회 -->
 	<select id="getData" parameterType="long" resultType="fileDto">
 		SELECT <include refid="column"/>
 		FROM files

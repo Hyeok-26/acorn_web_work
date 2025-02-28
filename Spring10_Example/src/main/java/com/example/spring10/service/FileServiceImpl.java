@@ -22,16 +22,17 @@ import com.example.spring10.repository.FileDao;
 @Service
 public class FileServiceImpl implements FileService{
 	
-	
+	//파일을 저장할 위치
 	@Value("${file.location}")
 	private String fileLocation;
 	@Autowired private FileDao fileDao;
 	
 	@Override
-	public long uploadFile(FileDto dto, MultipartFile myFile) {
+	public long uploadFile(FileDto dto) {
+		//업로더 정보 담기
 		String uploader = SecurityContextHolder.getContext().getAuthentication().getName();
         dto.setUploader(uploader);
-        
+        MultipartFile myFile = dto.getMyFile();
         // 파일이 비어있다면 예외 발생
         if (myFile.isEmpty()) {
             throw new RuntimeException("파일이 업로드되지 않았습니다.");
@@ -58,7 +59,6 @@ public class FileServiceImpl implements FileService{
         dto.setOrgFileName(orgFileName);
         dto.setSaveFileName(saveFileName);
         dto.setFileSize(fileSize);
-
         // 파일 정보 DB 저장 후 파일 번호 반환
         long num = fileDao.getSequence(); // 시퀀스 가져오기
         dto.setNum(num);
@@ -68,7 +68,7 @@ public class FileServiceImpl implements FileService{
 	}
 
 	@Override
-	public List<FileDto> getList() {
+	public List<FileDto> getFiles() {
         return fileDao.getList();
     }
 
@@ -78,12 +78,11 @@ public class FileServiceImpl implements FileService{
 	}
 
 	@Override
-	public ResponseEntity<InputStreamResource> download(FileDto dto) {
-		
-		//원래는 DB 에서 읽어와야 하지만 지금은 다운로드해줄 파일의 정보가 요청 파라미터로 전달된다.
+	public ResponseEntity<InputStreamResource> download(long num) {
+		//이제 드디어 db 에서 읽어온다!!!!!
 		try {
 			//다운로드 시켜줄 원본 파일명(인코딩해서 브라우저에게 알려준다)
-			String encodedName=URLEncoder.encode(dto.getOrgFileName(), "utf-8");
+			String encodedName=URLEncoder.encode(fileDao.getData(num).getOrgFileName(), "utf-8");
 			//파일명에 공백이 있는경우 파일명이 이상해지는걸 방지
 			encodedName=encodedName.replaceAll("\\+"," ");
 			//응답 헤더정보(스프링 프레임워크에서 제공해주는 클래스) 구성하기 (웹브라우저에 알릴정보)
@@ -93,13 +92,10 @@ public class FileServiceImpl implements FileService{
 			//파일의 이름 정보(웹브라우저가 해당정보를 이용해서 파일을 만들어 준다)
 			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="+encodedName);
 			//파일의 크기 정보도 담아준다.
-			headers.setContentLength(dto.getFileSize());
+			headers.setContentLength(fileDao.getData(num).getFileSize());
 			
 			//읽어들일 파일의 경로 구성
-			String filePath=fileLocation + File.separator + dto.getSaveFileName();
-			System.out.println(dto.getOrgFileName());
-			System.out.println(dto.getSaveFileName());
-			System.out.println(dto.getFileSize());
+			String filePath=fileLocation + File.separator + fileDao.getData(num).getSaveFileName();
 			//파일에서 읽어들일 스트림 객체
 			InputStream is = new FileInputStream(filePath);
 			//InputStreamResource 객체의 참조값 얻어내기
@@ -116,6 +112,11 @@ public class FileServiceImpl implements FileService{
 			//예외 발생시키기 
 			throw new RuntimeException("파일을 다운로드 하는 중에 에러 발생!");
 		}
+	}
+
+	@Override
+	public void updateFile(FileDto dto) {
+		fileDao.update(dto);
 	}
 
 }

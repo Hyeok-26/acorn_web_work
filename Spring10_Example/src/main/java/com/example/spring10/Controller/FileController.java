@@ -31,9 +31,11 @@ public class FileController {
 	
 	@GetMapping("/file/list")
 	public String list(Model model) {
-		List<FileDto> list= service.getList();
-		
+		//서비스를 이용해서 파일목록 얻어오기
+		List<FileDto> list= service.getFiles();
+		//응답에 필요한 데이터를 Model 객체에 담는다
 		model.addAttribute("list", list);
+		//template 페이지에 응답
 		return "file/list";
 	}
 	
@@ -44,8 +46,9 @@ public class FileController {
 	}
 	
 	@PostMapping("/file/upload")
-	public String upload(FileDto dto, MultipartFile myFile,RedirectAttributes ra) {
-		service.uploadFile(dto, myFile);
+	public String upload(FileDto dto,RedirectAttributes ra) {
+		//dto 에는 title 과 myFile 이 들어있다
+		service.uploadFile(dto);
 		
 		ra.addFlashAttribute("saveMessage","파일 업로드 성공!");
 		return "redirect:/file/list";
@@ -59,9 +62,9 @@ public class FileController {
 	
 	//파일 다운로드
 	@GetMapping("/file/download")
-	public ResponseEntity<InputStreamResource> download(FileDto dto) {
+	public ResponseEntity<InputStreamResource> download(long num) {
 		
 		
-		return service.download(dto);
+		return service.download(num);
 	}
 }

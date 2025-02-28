@@ -16,20 +16,25 @@ public class FileDaoImpl implements FileDao{
 	
 	@Override
 	public List<FileDto> getList() {
+		//번호에 대해서 내림차순 정렬
 		return session.selectList("file.getFileList");
 	}
 
-	
-
 	@Override
 	public int upload(FileDto dto) {
-		// TODO Auto-generated method stub
+		//파일의 번호는 files_seq 라는 이름의 시퀀스로 넣기
 		return session.insert("file.upload", dto);
 	}
-
+	
+	@Override
+	public int update(FileDto dto) {
+		//번호를 이용해서 title 만 수정하도록 한다
+		return session.update("file.update", dto);
+	}
+	
 	@Override
 	public int delete(long num) {
-		// TODO Auto-generated method stub
+		//번호를 이용해서 삭제
 		return session.delete("file.delete", num);
 	}
 
@@ -44,5 +49,4 @@ public class FileDaoImpl implements FileDao{
 		// TODO Auto-generated method stub
 		return session.selectOne("file.getSequence");
 	}
-
 }
