@@ -10,15 +10,15 @@
 		<form th:action="@{/member/update}" method="post">
 			<div>
 				<label for="num">번호</label>
-				<input type="text" name="num" id="num" th:value="${dto.num}" readonly/>
+				<input type="text" name="num" th:value="${dto.num}" readonly/>
 			</div>
 			<div>
 				<label for="name">이름</label>
-				<input type="text" name="name" id="name" th:value="${dto.name}"/>
+				<input type="text" name="name" th:value="${dto.name}"/>
 			</div>
 			<div>
 				<label for="addr">주소</label>
-				<input type="text" name="addr" id="addr" th:value="${dto.addr}"/>
+				<input type="text" name="addr" th:value="${dto.addr}"/>
 			</div>
 			<button type="submit">수정</button>
 			<button type="reset">취소</button>

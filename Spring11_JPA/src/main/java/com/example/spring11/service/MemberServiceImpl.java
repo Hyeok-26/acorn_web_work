@@ -19,7 +19,10 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public List<MemberDto> getAll() {
 		//Member Entity 의 목록
-		List<Member> entityList = repo.findAll();
+		//List<Member> entityList = repo.findAll();
+		
+		//추가된 메소드를 이용해서 num 에 대해서 내림차순 정력된 목록을 얻어낼 수 잇다
+		List<Member> entityList = repo.findAllByOrderByNumDesc();
 		/*
 		//MemberDto 의 목록으로 만들어서 리턴해야 한다.
 		List<MemberDto> list = new ArrayList<>();
@@ -30,6 +33,7 @@ public class MemberServiceImpl implements MemberService{
 		*/
 		//한줄코딩 유행
 		//List<MemberDto> list = entityList.stream().map(item -> MemberDto.toDto(item)).toList();
+		// stream() 을 활용하여 한줄의 coding 으로 위의 동작을 할 수 있다.
 		List<MemberDto> list = entityList.stream()
                 .map(MemberDto::toDto)
                 .toList();
@@ -38,24 +42,27 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public void saveMember(MemberDto dto) {
-		repo.save(MemberDto.toEntity(dto));
+		repo.save(Member.toEntity(dto));
 	}
 
 	@Override
 	public void editMember(MemberDto dto) {
-		repo.save(MemberDto.toEntity(dto));
+		//MemberDto 를 Entity 로 변경해서 save 한다
+		repo.save(Member.toEntity(dto));
 		
 	}
 
 	@Override
-	public void deleteMember(Integer num) {
+	public void deleteMember(int num) {
 		repo.deleteById(num);
 	}
 
 	@Override
-	public MemberDto getMember(Integer num) {
-		repo.getById(num);
-		return ;
+	public MemberDto getMember(int num) {
+		//id 를 이용해서 member entity type 을 얻어낸다
+		Member member = repo.findById(num).get();
+		//entity 를 dto 로 변경해서 리턴
+		return MemberDto.toDto(member);
 	}
 
 }

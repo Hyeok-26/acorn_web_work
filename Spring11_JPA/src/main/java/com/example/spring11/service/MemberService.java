@@ -10,6 +10,6 @@ public interface MemberService {
 	public List<MemberDto> getAll();
 	public void saveMember(MemberDto dto);
 	public void editMember(MemberDto dto);
-	public void deleteMember(Integer num);
-	public MemberDto getMember(Integer num); 
+	public void deleteMember(int num);
+	public MemberDto getMember(int num); 
 }

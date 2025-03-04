@@ -46,14 +46,14 @@ public class MemberController {
 	}
 	
 	@GetMapping("/member/delete")
-	public String deleteMember(Integer num) {
+	public String deleteMember(int num) {
 		service.deleteMember(num);
-		return "member/delete";
+		return "redirect:/member/list";
 	}
 	
 	@PostMapping("/member/update")
 	public String update(MemberDto dto) {
 		service.editMember(dto);
-        return "member/update";
+        return "redirect:/member/list";
 	} 
 }

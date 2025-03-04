@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class MemberDto {
-	private Integer num;
+	private int num;
 	private String name;
 	private String addr;
 	
@@ -23,13 +23,6 @@ public class MemberDto {
 				.num(entity.getNum())
 				.name(entity.getName())
 				.addr(entity.getAddr())
-				.build();
-	}
-	public static Member toEntity(MemberDto dto) {
-		return Member.builder()
-				.num(dto.getNum())
-				.name(dto.getName())
-				.addr(dto.getAddr())
 				.build();
 	}
 }
