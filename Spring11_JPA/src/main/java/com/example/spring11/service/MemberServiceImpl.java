@@ -23,6 +23,7 @@ public class MemberServiceImpl implements MemberService{
 		
 		//추가된 메소드를 이용해서 num 에 대해서 내림차순 정력된 목록을 얻어낼 수 잇다
 		List<Member> entityList = repo.findAllByOrderByNumDesc();
+		
 		/*
 		//MemberDto 의 목록으로 만들어서 리턴해야 한다.
 		List<MemberDto> list = new ArrayList<>();
@@ -31,6 +32,7 @@ public class MemberServiceImpl implements MemberService{
 			list.add(MemberDto.toDto(tmp));
 		}
 		*/
+		
 		//한줄코딩 유행
 		//List<MemberDto> list = entityList.stream().map(item -> MemberDto.toDto(item)).toList();
 		// stream() 을 활용하여 한줄의 coding 으로 위의 동작을 할 수 있다.

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container">
+		<h1>[[${dto.ename}]] 님의 사원정보</h1>
+		<table>
+			<tr>
+				<th>사원번호</th>
+				<td th:text="${dto.empno}"></td>
+			</tr>
+			<tr>
+				<th>직급</th>
+				<td th:text="${dto.job}"></td>
+			</tr>
+			<tr>
+				<th>담당 매니져 번호</th>
+				<td th:text="${dto.mgr}"></td>
+			</tr>
+			<tr>
+				<th>급여</th>
+				<td th:text="${dto.sal}"></td>
+			</tr>
+			<tr>
+				<th>성과금</th>
+				<td th:text="${dto.comm}"></td>
+			</tr>
+			<tr>
+				<th>부서 번호</th>
+				<td th:text="${dto.deptno}"></td>
+			</tr>
+			<tr>
+				<th>부서 이름</th>
+				<td th:text="${dto.dname}"></td>
+			</tr>
+			<tr>
+				<th>지역</th>
+				<td th:text="${dto.loc}"></td>
+			</tr>
+			
+		</table>
+	</div>
+</body>
+</html>
