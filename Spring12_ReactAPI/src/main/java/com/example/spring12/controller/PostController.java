@@ -64,4 +64,12 @@ public class PostController {
 		
 		return dto;
 	}
+	
+	@GetMapping("/posts/{id}")
+	public PostDto findPost(@PathVariable("id") long id) {
+		
+		//경로 변수에 전달된 post 의 id 를 이용해서 글정보 Entity 를 얻어낸다
+		Post post= repo.findById(id).get();
+		return PostDto.toDto(post);
+	}
 }	

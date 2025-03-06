@@ -1,4 +1,4 @@
-package com.example.spring12.entity;
+  package com.example.spring12.entity;
 
 import com.example.spring12.dto.PostDto;
 
