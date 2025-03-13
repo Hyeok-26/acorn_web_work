@@ -45,7 +45,7 @@ public class UserController {
 		return "pong";
 	}
 	
-	@PostMapping("/api/auth")
+	@PostMapping("/auth")
 	//@ResponseBody ResponseEntity 리턴 타입일 떄는 생략가능(자체 기능이 들어있다)
 	public ResponseEntity<String> auth(@RequestBody UserDto dto) throws Exception{
 		Authentication authentication=null;
