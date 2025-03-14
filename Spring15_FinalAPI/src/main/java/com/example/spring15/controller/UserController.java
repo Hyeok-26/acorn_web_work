@@ -9,12 +9,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spring15.util.JwtUtil;
 import com.example.spring15.dto.UserDto;
+import com.example.spring15.service.UserService;
 
 @RestController
 public class UserController {
@@ -22,6 +26,8 @@ public class UserController {
 	@Autowired JwtUtil jwtUtil;
 	//SecurityConfig 클래스에서 Bean 이된 AuthenticationManager 객체 주입밤기	
 	@Autowired AuthenticationManager authManager;
+	
+	@Autowired UserService service;
 	
 	//토큰을 받는 메소드
 	@PostMapping("/auth")
@@ -51,5 +57,33 @@ public class UserController {
 		System.out.println(authentication+"값이 없는데요?");
 		//발급받은 토큰 문자열을 ResponseEntity 에 담아서 리턴한다
 		return ResponseEntity.ok("Bearer "+token);
+	}
+	
+	//클라이언트가 토큰이 정상 동작하는지 확인할 요청 경로
+	@GetMapping("/ping")
+	public String ping() {
+		return "pong";
+	}
+	
+	@GetMapping("/user")
+	public UserDto getInfo() {
+		//이미 1회성 로그인이 되어 있기 때문에 userName 을 얻어낼 수 있다
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return service.getByUserName(userName);
+	}
+	
+	//json 문자열이 전송되는게 아니기 때문에 @RequestBody 는 필요없다
+	@PatchMapping("/user")
+	public String updateUser(UserDto dto) {
+		service.updateUserInfo(dto);
+		return "success";
+	}
+	
+	@PatchMapping("/user/password")
+	public String updatePassword(@RequestBody UserDto dto) {
+		
+		service.changePassword(dto);
+		
+		return "success";
 	}
 }
