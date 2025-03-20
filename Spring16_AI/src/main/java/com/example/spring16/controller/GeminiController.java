@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spring16.service.GeminiService;
+import com.example.spring16.service.GeminiService2;
 
 import reactor.core.publisher.Mono;
 /*
@@ -22,7 +23,7 @@ import reactor.core.publisher.Mono;
 @RestController
 public class GeminiController {
 	
-	@Autowired private GeminiService service;
+	@Autowired private GeminiService2 service;
 	
 	/*
 	 * 	POST 방식 /ask 요청을 하면서 아래의 형식과 같은 json 문자열을 전송하면 된다
@@ -37,6 +38,14 @@ public class GeminiController {
 		return service.getChatResponse(prompt);
 	}
 	
+	@PostMapping("/ask2")
+	public String ask2(@RequestBody Map<String, String> request){
+		//질문 얻어내기
+		String prompt = request.get("prompt");
+		//서비스를 이용해서 질문에 대한 답변을 리턴한다
+		return service.getChatSync(prompt);
+	}
+	
 	@PostMapping("/food")
 	public Mono<String> food(@RequestBody Map<String, String> request){
 		//질문 얻어내기
@@ -44,4 +53,6 @@ public class GeminiController {
 		//서비스를 이용해서 질문에 대한 답변을 리턴한다
 		return service.getFoodCategory(prompt);
 	}
+	
+
 }
